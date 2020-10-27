@@ -1,0 +1,9 @@
+{
+    "extends": "solhint:default",
+    "rules": {
+        "not-rely-on-time": ["off"],
+        "no-simple-event-func-name": ["off"],
+        "indent": ["warn", 2],
+        "max-line-length": ["error", 100]
+    }
+}

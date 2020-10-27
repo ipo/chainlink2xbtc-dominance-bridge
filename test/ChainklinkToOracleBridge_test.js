@@ -2,10 +2,10 @@
 const { oracle } = require('@chainlink/test-helpers')
 const { expectRevert, time } = require('@openzeppelin/test-helpers')
 
-contract('MyContract', accounts => {
+contract('ChainklinkToOracleBridge', accounts => {
   const { LinkToken } = require('@chainlink/contracts/truffle/v0.4/LinkToken')
   const { Oracle } = require('@chainlink/contracts/truffle/v0.6/Oracle')
-  const MyContract = artifacts.require('MyContract.sol')
+  const ChainklinkToOracleBridge = artifacts.require('ChainklinkToOracleBridge.sol')
 
   const defaultAccount = accounts[0]
   const oracleNode = accounts[1]
@@ -31,9 +31,12 @@ contract('MyContract', accounts => {
   beforeEach(async () => {
     link = await LinkToken.new({ from: defaultAccount })
     oc = await Oracle.new(link.address, { from: defaultAccount })
-    cc = await MyContract.new(link.address, { from: consumer })
+    cc = await ChainklinkToOracleBridge.new(link.address, oc.address, jobId, { from: consumer })
     await oc.setFulfillmentPermission(oracleNode, true, {
       from: defaultAccount,
+    })
+    await cc.addProvider(consumer, {
+      from: consumer,
     })
   })
 
@@ -41,7 +44,7 @@ contract('MyContract', accounts => {
     context('without LINK', () => {
       it('reverts', async () => {
         await expectRevert.unspecified(
-          cc.createRequestTo(oc.address, jobId, payment, url, path, times, {
+          cc.createRequest(payment, {
             from: consumer,
           }),
         )
@@ -59,13 +62,8 @@ contract('MyContract', accounts => {
 
       context('sending a request to a specific oracle contract address', () => {
         it('triggers a log event in the new Oracle contract', async () => {
-          const tx = await cc.createRequestTo(
-            oc.address,
-            jobId,
+          const tx = await cc.createRequest(
             payment,
-            url,
-            path,
-            times,
             { from: consumer },
           )
           request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
@@ -75,6 +73,16 @@ contract('MyContract', accounts => {
             web3.utils.keccak256(
               'OracleRequest(bytes32,address,bytes32,uint256,address,bytes4,uint256,uint256,bytes)',
             ),
+          )
+        })
+      })
+
+      context('for non-provider', () => {
+        it('reverts', async () => {
+          await expectRevert.unspecified(
+            cc.createRequest(payment, {
+              from: stranger,
+            }),
           )
         })
       })
@@ -90,13 +98,8 @@ contract('MyContract', accounts => {
       await link.transfer(cc.address, web3.utils.toWei('1', 'ether'), {
         from: defaultAccount,
       })
-      const tx = await cc.createRequestTo(
-        oc.address,
-        jobId,
+      const tx = await cc.createRequest(
         payment,
-        url,
-        path,
-        times,
         { from: consumer },
       )
       request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
@@ -113,6 +116,47 @@ contract('MyContract', accounts => {
       assert.equal(
         web3.utils.padLeft(web3.utils.toHex(currentPrice), 64),
         web3.utils.padLeft(expected, 64),
+      )
+    })
+
+    it('reduces the data precision by the expected amount', async () => {
+      const currentPrice = await cc.data.call()
+      assert.equal(
+        web3.utils.padLeft(web3.utils.toHex(currentPrice), 64),
+        web3.utils.padLeft(expected, 64),
+      )
+
+      // request lower precision
+      const oldPrecisionReductionDecimals = await cc.precisionReductionDecimals.call()
+      assert.equal(oldPrecisionReductionDecimals, 0)
+      const tx = await cc.setPrecisionReductionDecimals(
+        2,
+        { from: consumer },
+      )
+      const newPrecisionReductionDecimals = await cc.precisionReductionDecimals.call()
+      assert.equal(newPrecisionReductionDecimals, 2)
+
+      // re-request
+      await link.transfer(cc.address, web3.utils.toWei('1', 'ether'), {
+        from: defaultAccount,
+      })
+      const tx2 = await cc.createRequest(
+        payment,
+        { from: consumer },
+      )
+      request = oracle.decodeRunRequest(tx2.receipt.rawLogs[3])
+      await oc.fulfillOracleRequest(
+        ...oracle.convertFufillParams(request, response, {
+          from: oracleNode,
+          gas: 500000,
+        }),
+      )
+
+      // check result again
+      const currentPrice2 = await cc.data.call()
+      assert.equal(
+        web3.utils.padLeft(web3.utils.toHex(currentPrice2), 64),
+        web3.utils.padLeft(expected/100, 64),
       )
     })
 
@@ -150,13 +194,8 @@ contract('MyContract', accounts => {
       await link.transfer(cc.address, web3.utils.toWei('1', 'ether'), {
         from: defaultAccount,
       })
-      const tx = await cc.createRequestTo(
-        oc.address,
-        jobId,
+      const tx = await cc.createRequest(
         payment,
-        url,
-        path,
-        times,
         { from: consumer },
       )
       request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
