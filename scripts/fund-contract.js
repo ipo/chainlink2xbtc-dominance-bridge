@@ -1,4 +1,4 @@
-const ChainklinkToOracleBridge = artifacts.require('ChainklinkToOracleBridge')
+const ChainlinkToOracleBridge = artifacts.require('ChainlinkToOracleBridge')
 const LinkTokenInterface = artifacts.require('LinkTokenInterface')
 
 /*
@@ -12,7 +12,7 @@ const payment = process.env.TRUFFLE_CL_BOX_PAYMENT || '1000000000000000000'
 
 module.exports = async callback => {
   try {
-    const mc = await ChainklinkToOracleBridge.deployed()
+    const mc = await ChainlinkToOracleBridge.deployed()
     const tokenAddress = await mc.getChainlinkToken()
     const token = await LinkTokenInterface.at(tokenAddress)
     console.log('Funding contract:', mc.address)

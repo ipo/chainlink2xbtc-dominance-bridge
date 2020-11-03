@@ -5,11 +5,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IMedianOracle.sol";
 
 /**
- * @title ChainklinkToOracleBridge requests data from the Chainlink network and feeds it to xBTCs 
+ * @title ChainlinkToOracleBridge requests data from the Chainlink network and feeds it to xBTCs 
  * Dominance Oracle
  * @dev This contract is designed to work on multiple networks, including local test networks
  */
-contract ChainklinkToOracleBridge is ChainlinkClient, Ownable {
+contract ChainlinkToOracleBridge is ChainlinkClient, Ownable {
   uint256 public data;
 
   // details where and how to publish reports to the xBTC oracle

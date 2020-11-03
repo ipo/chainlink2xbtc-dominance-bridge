@@ -15,6 +15,10 @@ docker run -it \
     --name $CONTAINER_NAME \
     --net host \
     --volume `pwd`/:/src/:rw \
+    --volume `pwd`/key_xbtc_infura_mainnet.txt:/code/key_xbtc_infura_mainnet.txt:ro \
+    --volume `pwd`/key_xbtc_infura_rinkeby.txt:/code/key_xbtc_infura_rinkeby.txt:ro \
+    --volume `pwd`/key_xbtc_mainnet.txt:/code/key_xbtc_mainnet.txt:ro \
+    --volume `pwd`/key_xbtc_rinkeby.txt:/code/key_xbtc_rinkeby.txt:ro \
     $DOCKER_IMAGE $@
 #    --rm \
 

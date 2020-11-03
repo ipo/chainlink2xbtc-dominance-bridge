@@ -1,4 +1,4 @@
-const ChainklinkToOracleBridge = artifacts.require('ChainklinkToOracleBridge')
+const ChainlinkToOracleBridge = artifacts.require('ChainlinkToOracleBridge')
 
 /*
   This script allows for a Chainlink request to be created from
@@ -19,7 +19,7 @@ const path = process.env.TRUFFLE_CL_BOX_JSON_PATH || 'USD'
 const times = process.env.TRUFFLE_CL_BOX_TIMES || '100'
 
 module.exports = async callback => {
-  const mc = await ChainklinkToOracleBridge.deployed()
+  const mc = await ChainlinkToOracleBridge.deployed()
   console.log('Creating request on contract:', mc.address)
   const tx = await mc.createRequestTo(
     oracleAddress,

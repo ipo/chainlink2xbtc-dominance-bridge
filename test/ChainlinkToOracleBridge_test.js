@@ -2,10 +2,10 @@
 const { oracle } = require('@chainlink/test-helpers')
 const { expectRevert, time } = require('@openzeppelin/test-helpers')
 
-contract('ChainklinkToOracleBridge', accounts => {
+contract('ChainlinkToOracleBridge', accounts => {
   const { LinkToken } = require('@chainlink/contracts/truffle/v0.4/LinkToken')
   const { Oracle } = require('@chainlink/contracts/truffle/v0.6/Oracle')
-  const ChainklinkToOracleBridge = artifacts.require('ChainklinkToOracleBridge.sol')
+  const ChainlinkToOracleBridge = artifacts.require('ChainlinkToOracleBridge.sol')
 
   const defaultAccount = accounts[0]
   const oracleNode = accounts[1]
@@ -31,7 +31,7 @@ contract('ChainklinkToOracleBridge', accounts => {
   beforeEach(async () => {
     link = await LinkToken.new({ from: defaultAccount })
     oc = await Oracle.new(link.address, { from: defaultAccount })
-    cc = await ChainklinkToOracleBridge.new(link.address, oc.address, jobId, { from: consumer })
+    cc = await ChainlinkToOracleBridge.new(link.address, oc.address, jobId, { from: consumer })
     await oc.setFulfillmentPermission(oracleNode, true, {
       from: defaultAccount,
     })

@@ -1,0 +1,11 @@
+node_modules/
+package-lock.json
+
+key_**
+yarn-error.log
+
+.git/
+docker/
+
+.gitignore
+.dockerignore

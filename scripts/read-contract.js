@@ -1,4 +1,4 @@
-const ChainklinkToOracleBridge = artifacts.require('ChainklinkToOracleBridge')
+const ChainlinkToOracleBridge = artifacts.require('ChainlinkToOracleBridge')
 
 /*
   This script makes it easy to read the data variable
@@ -6,7 +6,7 @@ const ChainklinkToOracleBridge = artifacts.require('ChainklinkToOracleBridge')
 */
 
 module.exports = async callback => {
-  const mc = await ChainklinkToOracleBridge.deployed()
+  const mc = await ChainlinkToOracleBridge.deployed()
   const data = await mc.data.call()
   callback(data)
 }

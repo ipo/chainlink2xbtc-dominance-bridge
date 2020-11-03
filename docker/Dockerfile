@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-mysqldb
 RUN cd /tmp/ && wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - && apt-get install -y nodejs
 
 RUN apt-get install -y gnupg2
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
@@ -35,11 +35,13 @@ ADD package.json /code/
 RUN yarn
 
 ADD truffle-config.js .solhint.json /code/
+ADD migrations/ /code/migrations/
 ADD test/ /code/test/
+ADD build/ /code/build/
 ADD contracts/ /code/contracts/
 
-RUN yarn compile
-RUN yarn lint
-RUN yarn test
+RUN GWEI=1 yarn compile
+RUN GWEI=1 yarn lint
+RUN GWEI=1 yarn test
 
 CMD echo
