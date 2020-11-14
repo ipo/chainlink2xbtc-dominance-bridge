@@ -28,7 +28,6 @@
     "depcheck": "^0.9.1",
     "solhint": "^2.1.0",
     "truffle": "^5.1.5",
-    "truffle-hdwallet-provider-privkey": "^1.0.3",
-    "prompt": "^1.0.0"
+    "truffle-hdwallet-provider-privkey": "^1.0.3"
   }
 }

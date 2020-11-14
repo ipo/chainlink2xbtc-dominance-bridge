@@ -145,6 +145,17 @@ contract ChainlinkToOracleBridge is ChainlinkClient, Ownable {
   }
 
   /**
+   * @notice Changes the Chainlink oracle.
+   * @param _chainlinkOracle Address of the new oracle.
+   */
+  function setChainlinkOracleExternal(address _chainlinkOracle)
+    external
+    onlyOwner
+  {
+    setChainlinkOracle(_chainlinkOracle);
+  }
+
+  /**
    * @notice Revokes provider authorization.
    * @param provider Address of the provider.
    */

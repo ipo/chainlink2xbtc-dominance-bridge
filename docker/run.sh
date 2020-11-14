@@ -19,6 +19,7 @@ docker run -it \
     --volume `pwd`/key_xbtc_infura_rinkeby.txt:/code/key_xbtc_infura_rinkeby.txt:ro \
     --volume `pwd`/key_xbtc_mainnet.txt:/code/key_xbtc_mainnet.txt:ro \
     --volume `pwd`/key_xbtc_rinkeby.txt:/code/key_xbtc_rinkeby.txt:ro \
+    --volume `pwd`/key_xbtc_etherscan_api_key.txt:/code/key_xbtc_etherscan_api_key.txt:ro \
     $DOCKER_IMAGE $@
 #    --rm \
 

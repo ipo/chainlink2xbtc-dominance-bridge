@@ -32,6 +32,7 @@ var privKeysRinkeby = null;
 var privKeysMainnet = null;
 var infuraRinkeby = null;
 var infuraMainnet = null;
+var etherscanAPIKey = null;
 try {
   privKeysRinkeby = [
     fs.readFileSync("key_xbtc_rinkeby.txt").toString().trim(), // Rinkeby #1
@@ -42,6 +43,8 @@ try {
   
   infuraRinkeby = fs.readFileSync("key_xbtc_infura_rinkeby.txt").toString().trim();
   infuraMainnet = fs.readFileSync("key_xbtc_infura_mainnet.txt").toString().trim();
+
+  etherscanAPIKey = fs.readFileSync("key_xbtc_etherscan_api_key.txt").toString().trim();
 } catch (e) {
   privKeysRinkeby = [
     "",
@@ -52,6 +55,7 @@ try {
   
   infuraRinkeby = "";
   infuraMainnet = "";
+  etherscanAPIKey = "";
 }
 
 if (typeof(process.env.GWEI) != 'string') {
@@ -143,5 +147,12 @@ module.exports = {
       //  evmVersion: "byzantium"
       }
     }
+  },
+
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+  api_keys: {
+    etherscan: etherscanAPIKey
   }
 }
