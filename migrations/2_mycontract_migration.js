@@ -21,6 +21,6 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     // For live networks, use the 0 address to allow the ChainlinkRegistry
     // contract automatically retrieve the correct address for you
     var linkOracleAddress = '0x59bbE8CFC79c76857fE0eC27e67E4957370d72B5'
-    deployer.deploy(ChainlinkToOracleBridge, '0x0000000000000000000000000000000000000000', linkOracleAddress, jobId)
+    await deployer.deploy(ChainlinkToOracleBridge, '0x0000000000000000000000000000000000000000', linkOracleAddress, jobId)
   }
 }
